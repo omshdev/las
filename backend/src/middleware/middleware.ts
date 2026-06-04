@@ -1,9 +1,11 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import { userModel } from "../models/schema.js";
 const JWT_SECRET = process.env.JWT_SECRET!;
 
 interface authRequest extends Request{
     userId? : string;
+    role? : string;
 }
 export async function authMiddleware(req:authRequest,res:Response,next:NextFunction){
     const authHeaders = req.headers.authorization;
@@ -15,7 +17,8 @@ export async function authMiddleware(req:authRequest,res:Response,next:NextFunct
     const verifyToken:any= jwt.verify(token,JWT_SECRET) || "";
     console.log('verifed token',verifyToken.userId);
     req.userId = verifyToken?.userId;
-
+    const user : any = await userModel.findOne({_id:req.userId});
+    req.role = user?.role;
     next();
 
 }

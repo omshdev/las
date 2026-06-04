@@ -10,7 +10,8 @@ const userSchema = new mongoose.Schema({
     },
     role : {
         enum: ["teacher","student"],
-        required : true
+        required : true,
+        type : String
     },
     email : {
         type : String,
@@ -19,8 +20,7 @@ const userSchema = new mongoose.Schema({
     },
     password : {
         type : String,
-        required:true,
-        maxLength : 8,
+        required:true
     }
 });
 
@@ -56,11 +56,12 @@ const attendenceScheama = new mongoose.Schema({
     },
     status : {
         enum : ["present" , "absent" ],
-        required : true
+        required : true,
+        type : String
     }
 });
 
 
-export const userModel = new mongoose.Model("Users",userSchema);
-export const classModel = new mongoose.Model("Class",classSchema);
-export const attendenceModel = new mongoose.Model("Attendance",attendenceScheama);
+export const userModel = mongoose.model("Users",userSchema);
+export const classModel =  mongoose.model("Class",classSchema);
+export const attendenceModel = mongoose.model("Attendance",attendenceScheama);

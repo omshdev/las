@@ -13,6 +13,10 @@ export const SignInSchema = z.object({
 });
 
 export const ClassSchema = z.object({
-    
+    className : z.string()
+});
+
+export const addStudentSchema = z.object({
+    studentId : z.string()
 });
 
