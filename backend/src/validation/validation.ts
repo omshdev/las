@@ -16,6 +16,9 @@ export const ClassSchema = z.object({
     className : z.string()
 });
 
+export const classIdSchema = z.object({
+    classId : z.string()
+})
 export const addStudentSchema = z.object({
     studentId : z.string()
 });
