@@ -14,17 +14,19 @@ interface authRequest extends Request{
 
 router.post("/signup",async(req:Request,res:Response)=>{
     try{
+        console.log("i am here..>!");
         const {name,email,role,password } = req.body;
         const isValid = SignUpSchema.safeParse(req.body);
-        if(!isValid){
+        if(!isValid.success){
             return res.status(400).json({
                 "success" : false,
                 "error" : "Invalid request schema"
             })
         };
-        
+        console.log("i am here2..>!");
+        // const isUserExist = await userModel.findOne({email : email});
         const isUserExist = await userModel.findOne({email : email});
-        
+        console.log("isUser exist",isUserExist);
         if(isUserExist){
             res.status(200).json({
                 "success" : false,
@@ -32,6 +34,7 @@ router.post("/signup",async(req:Request,res:Response)=>{
             });
             return;
         }
+        console.log("here i am?");
         const newUser = await userModel.create({
             name : name,
             email : email,
@@ -39,7 +42,7 @@ router.post("/signup",async(req:Request,res:Response)=>{
             password : password
 
         });
-        await newUser.save();
+        // await newUser.save();
         res.status(200).json({
             "success":"true",
             "data":{
@@ -60,7 +63,7 @@ router.post("/login",async(req:Request,res:Response)=>{
     try{
         const { email,password } = req.body;
         const isValid = SignInSchema.safeParse(req.body);
-        if(!isValid){
+        if(!isValid.success){
             res.status(400).json({
                 "success" : false,
                 "error" : "Invalid request schema",
@@ -101,7 +104,7 @@ router.post("/login",async(req:Request,res:Response)=>{
 router.get("/me",authMiddleware,async(req:authRequest,res:Response)=>{
     try{
         const userId = req.userId;
-        const user = await userModel.findOne({id : userId});
+        const user = await userModel.findOne({_id : userId});
         if(!user){return};
         res.status(200).json({
             "success":true,

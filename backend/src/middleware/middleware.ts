@@ -1,6 +1,10 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { userModel } from "../models/schema.js";
+import dotenv from "dotenv";
+
+dotenv.config();
+
 const JWT_SECRET = process.env.JWT_SECRET!;
 
 interface authRequest extends Request{
@@ -14,7 +18,7 @@ export async function authMiddleware(req:authRequest,res:Response,next:NextFunct
     if(!token) return;
     
     console.log('verifing token');
-    const verifyToken:any= jwt.verify(token,JWT_SECRET) || "";
+    const verifyToken:any= jwt.verify(token,JWT_SECRET);
     console.log('verifed token',verifyToken.userId);
     req.userId = verifyToken?.userId;
     const user : any = await userModel.findOne({_id:req.userId});
