@@ -14,15 +14,13 @@ router.post('/class',authMiddleware,async(req:AuthRequest,res:Response)=>{
     try{
         const { className } = req.body;
         const isValid = ClassSchema.safeParse(req.body);
-        if(!isValid) return res.status(400).json({ "success":false,"error":"Invalid request schema"});
+        if(!isValid.success) return res.status(400).json({ "success":false,"error":"Invalid request schema"});
 
         // allow only to teacher
         const userId = req.userId;
         if(!userId) return;
-
-        const isValidRole = await userModel.findOne({userId : userId,role : "teacher"});
+        const isValidRole = await userModel.findOne({_id: userId,role : "teacher"});
         if(!isValidRole) return res.status(400).json({ "error": "Forbidden, teacher access required"});
-
         // const newClass = await classModel.create({
         //     className : className,
         //     teacherId : userId,
@@ -53,7 +51,7 @@ router.post('/class/:id/add-student',authMiddleware,async(req:AuthRequest,res:Re
     try{
         const { studentId }= req.body;
         const isValid = addStudentSchema.safeParse(studentId)
-        if(!isValid) return res.status(400).json({ "success":false,"error":"Invalid request schema"});
+        if(!isValid.success) return res.status(400).json({ "success":false,"error":"Invalid request schema"});
 
         const classId = req.params.id;
         const isClassExist = await classModel.findOne({classId : classId});
@@ -183,7 +181,7 @@ router.post("/attendance/start",authMiddleware,async(req:AuthRequest,res:Respons
         }
         const { classId } = req.body;
         const isValidClassId = classIdSchema.safeParse(req.body);
-        if(!isValidClassId) return res.status(400).json({ "success":false,"error":"Invalid request schema"});
+        if(!isValidClassId.success) return res.status(400).json({ "success":false,"error":"Invalid request schema"});
         const session = {classId : classId,startedAt : new Date().toISOString(),attendense:{}};
         sessions.push(session);
         res.status(200).json({ "success":true,"data":{"classId":session.classId,"startedAt":session.startedAt}});
